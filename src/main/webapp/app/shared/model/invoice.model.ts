@@ -17,6 +17,7 @@ export const enum PaymentMethod {
 export interface IInvoice {
     id?: number;
     date?: Moment;
+    code?: string;
     details?: string;
     status?: InvoiceStatus;
     paymentMethod?: PaymentMethod;
@@ -30,6 +31,7 @@ export class Invoice implements IInvoice {
     constructor(
         public id?: number,
         public date?: Moment,
+        public code?: string,
         public details?: string,
         public status?: InvoiceStatus,
         public paymentMethod?: PaymentMethod,

@@ -18,6 +18,7 @@ export class InvoiceUpdatePage {
     saveButton = element(by.id('save-entity'));
     cancelButton = element(by.id('cancel-save'));
     dateInput = element(by.id('field_date'));
+    codeInput = element(by.id('field_code'));
     detailsInput = element(by.id('field_details'));
     statusSelect = element(by.id('field_status'));
     paymentMethodSelect = element(by.id('field_paymentMethod'));
@@ -35,6 +36,14 @@ export class InvoiceUpdatePage {
 
     async getDateInput() {
         return this.dateInput.getAttribute('value');
+    }
+
+    async setCodeInput(code) {
+        await this.codeInput.sendKeys(code);
+    }
+
+    async getCodeInput() {
+        return this.codeInput.getAttribute('value');
     }
 
     async setDetailsInput(details) {

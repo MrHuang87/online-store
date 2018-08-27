@@ -17,6 +17,7 @@
                 "title": "Invoice"
             },
             "date": "Date",
+            "code": "Code",
             "details": "Details",
             "status": "Status",
             "paymentMethod": "Payment Method",

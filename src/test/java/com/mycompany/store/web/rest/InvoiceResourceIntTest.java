@@ -3,6 +3,7 @@ package com.mycompany.store.web.rest;
 import com.mycompany.store.StoreApp;
 
 import com.mycompany.store.domain.Invoice;
+import com.mycompany.store.domain.ProductOrder;
 import com.mycompany.store.repository.InvoiceRepository;
 import com.mycompany.store.service.InvoiceService;
 import com.mycompany.store.web.rest.errors.ExceptionTranslator;
@@ -47,6 +48,9 @@ public class InvoiceResourceIntTest {
 
     private static final Instant DEFAULT_DATE = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     private static final String DEFAULT_DETAILS = "AAAAAAAAAA";
     private static final String UPDATED_DETAILS = "BBBBBBBBBB";
@@ -107,11 +111,17 @@ public class InvoiceResourceIntTest {
     public static Invoice createEntity(EntityManager em) {
         Invoice invoice = new Invoice()
             .date(DEFAULT_DATE)
+            .code(DEFAULT_CODE)
             .details(DEFAULT_DETAILS)
             .status(DEFAULT_STATUS)
             .paymentMethod(DEFAULT_PAYMENT_METHOD)
             .paymentDate(DEFAULT_PAYMENT_DATE)
             .paymentAmount(DEFAULT_PAYMENT_AMOUNT);
+        // Add required entity
+        ProductOrder productOrder = ProductOrderResourceIntTest.createEntity(em);
+        em.persist(productOrder);
+        em.flush();
+        invoice.setOrder(productOrder);
         return invoice;
     }
 
@@ -136,6 +146,7 @@ public class InvoiceResourceIntTest {
         assertThat(invoiceList).hasSize(databaseSizeBeforeCreate + 1);
         Invoice testInvoice = invoiceList.get(invoiceList.size() - 1);
         assertThat(testInvoice.getDate()).isEqualTo(DEFAULT_DATE);
+        assertThat(testInvoice.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testInvoice.getDetails()).isEqualTo(DEFAULT_DETAILS);
         assertThat(testInvoice.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testInvoice.getPaymentMethod()).isEqualTo(DEFAULT_PAYMENT_METHOD);
@@ -168,6 +179,24 @@ public class InvoiceResourceIntTest {
         int databaseSizeBeforeTest = invoiceRepository.findAll().size();
         // set the field null
         invoice.setDate(null);
+
+        // Create the Invoice, which fails.
+
+        restInvoiceMockMvc.perform(post("/api/invoices")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(invoice)))
+            .andExpect(status().isBadRequest());
+
+        List<Invoice> invoiceList = invoiceRepository.findAll();
+        assertThat(invoiceList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkCodeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = invoiceRepository.findAll().size();
+        // set the field null
+        invoice.setCode(null);
 
         // Create the Invoice, which fails.
 
@@ -264,6 +293,7 @@ public class InvoiceResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invoice.getId().intValue())))
             .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].details").value(hasItem(DEFAULT_DETAILS.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].paymentMethod").value(hasItem(DEFAULT_PAYMENT_METHOD.toString())))
@@ -284,6 +314,7 @@ public class InvoiceResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(invoice.getId().intValue()))
             .andExpect(jsonPath("$.date").value(DEFAULT_DATE.toString()))
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.details").value(DEFAULT_DETAILS.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.paymentMethod").value(DEFAULT_PAYMENT_METHOD.toString()))
@@ -312,6 +343,7 @@ public class InvoiceResourceIntTest {
         em.detach(updatedInvoice);
         updatedInvoice
             .date(UPDATED_DATE)
+            .code(UPDATED_CODE)
             .details(UPDATED_DETAILS)
             .status(UPDATED_STATUS)
             .paymentMethod(UPDATED_PAYMENT_METHOD)
@@ -328,6 +360,7 @@ public class InvoiceResourceIntTest {
         assertThat(invoiceList).hasSize(databaseSizeBeforeUpdate);
         Invoice testInvoice = invoiceList.get(invoiceList.size() - 1);
         assertThat(testInvoice.getDate()).isEqualTo(UPDATED_DATE);
+        assertThat(testInvoice.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testInvoice.getDetails()).isEqualTo(UPDATED_DETAILS);
         assertThat(testInvoice.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testInvoice.getPaymentMethod()).isEqualTo(UPDATED_PAYMENT_METHOD);
