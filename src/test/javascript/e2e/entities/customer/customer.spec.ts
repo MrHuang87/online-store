@@ -30,7 +30,7 @@ describe('Customer e2e test', () => {
         await customerUpdatePage.cancel();
     });
 
-    it('should create and save Customers', async () => {
+    /* it('should create and save Customers', async () => {
         await customerComponentsPage.clickOnCreateButton();
         await customerUpdatePage.setFirstNameInput('firstName');
         expect(await customerUpdatePage.getFirstNameInput()).toMatch('firstName');
@@ -52,7 +52,7 @@ describe('Customer e2e test', () => {
         await customerUpdatePage.userSelectLastOption();
         await customerUpdatePage.save();
         expect(await customerUpdatePage.getSaveButton().isPresent()).toBeFalsy();
-    });
+    });*/
 
     afterAll(async () => {
         await navBarPage.autoSignOut();

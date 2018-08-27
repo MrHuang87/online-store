@@ -30,7 +30,7 @@ describe('Shipment e2e test', () => {
         await shipmentUpdatePage.cancel();
     });
 
-    it('should create and save Shipments', async () => {
+    /* it('should create and save Shipments', async () => {
         await shipmentComponentsPage.clickOnCreateButton();
         await shipmentUpdatePage.setTrackingCodeInput('trackingCode');
         expect(await shipmentUpdatePage.getTrackingCodeInput()).toMatch('trackingCode');
@@ -41,7 +41,7 @@ describe('Shipment e2e test', () => {
         await shipmentUpdatePage.invoiceSelectLastOption();
         await shipmentUpdatePage.save();
         expect(await shipmentUpdatePage.getSaveButton().isPresent()).toBeFalsy();
-    });
+    });*/
 
     afterAll(async () => {
         await navBarPage.autoSignOut();
