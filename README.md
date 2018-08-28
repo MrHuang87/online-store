@@ -145,6 +145,16 @@ For more information refer to [Using Docker and Docker-Compose][], this page als
 
 To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
 
+## 安全定制
+
+JHipster不提供role-based security，授权管理等。这个是故意这样的，因为这些和具体的使用场景的业务逻辑是紧密相关的。因此这个由开发者作为业务逻辑的一部分进行编码是比较合适的。
+
+本应用有些漏洞：
+- 普通用户应该只能访问产品列表，产品订单，订单项，发票和物流页面
+- 普通用户不该访问create/edit/delete实体，相关的crud api。
+- 普通用户不能访问其他用户的订单，订单项，发票和物流信息。
+
+
 [JHipster Homepage and latest documentation]: https://www.jhipster.tech
 [JHipster 5.2.1 archive]: https://www.jhipster.tech/documentation-archive/v5.2.1
 
@@ -165,3 +175,5 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 [Protractor]: https://angular.github.io/protractor/
 [Leaflet]: http://leafletjs.com/
 [DefinitelyTyped]: http://definitelytyped.org/
+
+

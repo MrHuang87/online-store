@@ -9,6 +9,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,6 +45,7 @@ public class ProductCategoryResource {
      */
     @PostMapping("/product-categories")
     @Timed
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductCategory> createProductCategory(@Valid @RequestBody ProductCategory productCategory) throws URISyntaxException {
         log.debug("REST request to save ProductCategory : {}", productCategory);
         if (productCategory.getId() != null) {
@@ -66,6 +68,7 @@ public class ProductCategoryResource {
      */
     @PutMapping("/product-categories")
     @Timed
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductCategory> updateProductCategory(@Valid @RequestBody ProductCategory productCategory) throws URISyntaxException {
         log.debug("REST request to update ProductCategory : {}", productCategory);
         if (productCategory.getId() == null) {
@@ -111,6 +114,7 @@ public class ProductCategoryResource {
      */
     @DeleteMapping("/product-categories/{id}")
     @Timed
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteProductCategory(@PathVariable Long id) {
         log.debug("REST request to delete ProductCategory : {}", id);
         productCategoryService.delete(id);

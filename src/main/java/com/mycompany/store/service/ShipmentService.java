@@ -2,6 +2,8 @@ package com.mycompany.store.service;
 
 import com.mycompany.store.domain.Shipment;
 import com.mycompany.store.repository.ShipmentRepository;
+import com.mycompany.store.security.AuthoritiesConstants;
+import com.mycompany.store.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Optional;
+
 /**
  * Service Implementation for managing Shipment.
  */
@@ -34,7 +37,8 @@ public class ShipmentService {
      * @return the persisted entity
      */
     public Shipment save(Shipment shipment) {
-        log.debug("Request to save Shipment : {}", shipment);        return shipmentRepository.save(shipment);
+        log.debug("Request to save Shipment : {}", shipment);
+        return shipmentRepository.save(shipment);
     }
 
     /**
@@ -46,7 +50,15 @@ public class ShipmentService {
     @Transactional(readOnly = true)
     public Page<Shipment> findAll(Pageable pageable) {
         log.debug("Request to get all Shipments");
-        return shipmentRepository.findAll(pageable);
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            return shipmentRepository.findAll(pageable);
+        } else {
+            return shipmentRepository.findAllByInvoiceOrderCustomerUserLogin(
+                SecurityUtils.getCurrentUserLogin().get(),
+                pageable
+            );
+        }
+
     }
 
 
@@ -59,7 +71,16 @@ public class ShipmentService {
     @Transactional(readOnly = true)
     public Optional<Shipment> findOne(Long id) {
         log.debug("Request to get Shipment : {}", id);
-        return shipmentRepository.findById(id);
+
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            return shipmentRepository.findById(id);
+        } else {
+            return shipmentRepository.findOneByIdAndInvoiceOrderCustomerUserLogin(
+                id,
+                SecurityUtils.getCurrentUserLogin().get()
+            );
+        }
+
     }
 
     /**
