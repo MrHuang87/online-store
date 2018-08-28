@@ -30,6 +30,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
 
+    filter: string;
+
     constructor(
         private productService: ProductService,
         private parseLinks: JhiParseLinks,
