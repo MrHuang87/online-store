@@ -1,7 +1,9 @@
 <div>
+    <!-- 该页面在小屏幕下显示会有问题， 排序按钮和查询输入框 -->
     <h2 id="page-heading">
         <span jhiTranslate="storeApp.product.home.title">Products</span>
-        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-product" [routerLink]="['/product/new']">
+        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" id="jh-create-entity"
+                class="btn btn-primary float-right jh-create-entity create-product col-2 col-xs-6" [routerLink]="['/product/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="storeApp.product.home.createLabel">
             Create new Product
