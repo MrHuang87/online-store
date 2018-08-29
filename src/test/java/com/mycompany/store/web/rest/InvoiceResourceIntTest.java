@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -70,7 +71,7 @@ public class InvoiceResourceIntTest {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    
+
 
     @Autowired
     private InvoiceService invoiceService;
@@ -132,6 +133,7 @@ public class InvoiceResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"}, password = "admin")
     public void createInvoice() throws Exception {
         int databaseSizeBeforeCreate = invoiceRepository.findAll().size();
 
@@ -283,6 +285,7 @@ public class InvoiceResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"}, password = "admin")
     public void getAllInvoices() throws Exception {
         // Initialize the database
         invoiceRepository.saveAndFlush(invoice);
@@ -300,10 +303,11 @@ public class InvoiceResourceIntTest {
             .andExpect(jsonPath("$.[*].paymentDate").value(hasItem(DEFAULT_PAYMENT_DATE.toString())))
             .andExpect(jsonPath("$.[*].paymentAmount").value(hasItem(DEFAULT_PAYMENT_AMOUNT.intValue())));
     }
-    
+
 
     @Test
     @Transactional
+    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"}, password = "admin")
     public void getInvoice() throws Exception {
         // Initialize the database
         invoiceRepository.saveAndFlush(invoice);
@@ -331,6 +335,7 @@ public class InvoiceResourceIntTest {
 
     @Test
     @Transactional
+    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"}, password = "admin")
     public void updateInvoice() throws Exception {
         // Initialize the database
         invoiceService.save(invoice);
@@ -375,7 +380,7 @@ public class InvoiceResourceIntTest {
 
         // Create the Invoice
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvoiceMockMvc.perform(put("/api/invoices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(invoice)))
